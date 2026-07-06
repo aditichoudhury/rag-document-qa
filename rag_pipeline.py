@@ -1,10 +1,14 @@
+import os
+from dotenv import load_dotenv
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain_community.chat_models import ChatOllama
+from langchain_groq import ChatGroq
 from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
+
+load_dotenv()
 
 
 class RAGPipeline:
@@ -38,7 +42,13 @@ class RAGPipeline:
     def build_qa_chain(self):
         if self.vectorstore is None:
             raise ValueError("Vectorstore not built yet.")
-        llm = ChatOllama(model="llama3", temperature=0)
+
+        llm = ChatGroq(
+            model_name="llama-3.1-8b-instant",
+            temperature=0,
+            groq_api_key=os.getenv("GROQ_API_KEY")
+        )
+
         prompt_template = """Use the following pieces of context to answer the question at the end.
 If you don't know the answer based on the context, just say you don't know — do not make up an answer.
 
@@ -48,9 +58,11 @@ Context:
 Question: {question}
 
 Answer:"""
+
         prompt = PromptTemplate(
             template=prompt_template, input_variables=["context", "question"]
         )
+
         self.qa_chain = RetrievalQA.from_chain_type(
             llm=llm,
             chain_type="stuff",

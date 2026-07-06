@@ -62,3 +62,6 @@ if st.session_state.document_processed:
         st.divider()
 else:
     st.info("Upload and process a PDF from the sidebar to get started.")
+
+
+
