@@ -52,3 +52,7 @@ pip install -r requirements.txt
 streamlit run app.py
 
 You'll need a GROQ_API_KEY in a .env file. Get one free at console.groq.com/keys
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
